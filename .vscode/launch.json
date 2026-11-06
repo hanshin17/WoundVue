@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Flask: WoundVue (debug)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/app.py",
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Test: functional pipeline",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/tests/test_pipeline.py",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Test: model evaluation (test set)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/tests/evaluate_models.py",
+      "console": "integratedTerminal"
+    }
+  ]
+}

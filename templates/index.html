@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WoundVue — Identifikasi & Klasifikasi Luka Kulit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+
+<div class="ambient"></div>
+<div class="grid-pattern"></div>
+
+<!-- NAVBAR -->
+<nav id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="brand" id="navBrandLink">
+      <img src="{{ url_for('static', filename='images/WoundVueLogo.png') }}" alt="WoundVue" class="brand-logo" />
+    </a>
+    <div class="nav-links">
+      <a href="#analyze" class="nav-link" id="navAnalyzeLink">Analisis</a>
+      <a href="#how" class="nav-link active" id="navHowLink">Cara Kerja</a>
+      <a href="#contact" class="nav-link" id="navContactLink">Kontak</a>
+      <span class="nav-badge"><span class="dot"></span> Gemini 3.5 Flash</span>
+    </div>
+  </div>
+</nav>
+
+<!-- START PAGE VIEW -->
+<div id="startPage">
+  <!-- HERO -->
+  <header class="hero container">
+    <div class="start-logo-wrap">
+      <img src="{{ url_for('static', filename='images/WoundVueLogo.png') }}" alt="WoundVue Logo" class="start-logo" />
+    </div>
+    <div class="hero-eyebrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4L12 17l-6.3 4.4L8 14 2 9.4h7.6z"/>
+      </svg>
+      Integrasi Deep Learning & Large Language Model
+    </div>
+    <h1>Identifikasi & Klasifikasi <span class="grad">Luka pada Kulit</span></h1>
+    <p>
+      Sistem bantu berbasis AI yang menggabungkan segmentasi U-Net, transfer learning
+      multi-arsitektur, interpretabilitas Grad-CAM, dan rekomendasi penanganan awal
+      dari Gemini 3.5 Flash dalam satu alur kerja terpadu.
+    </p>
+    <div class="hero-actions">
+      <button type="button" id="startBtn" class="btn btn-primary btn-start">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+        Start Analisis
+      </button>
+    </div>
+
+    <div class="pipeline" id="how">
+      <div class="pipe-step" data-pipe="0">
+        <div class="pipe-top">
+          <div>
+            <div class="pipe-num">01 — SEGMENTASI</div>
+            <div class="pipe-title">U-Net</div>
+            <div class="pipe-desc">Isolasi area luka dari latar belakang kulit sehat.</div>
+          </div>
+          <span class="pipe-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </div>
+        <div class="pipe-detail">
+          Citra input beresolusi 224 × 224 piksel dinormalisasi ke rentang [0, 1] dan diproses oleh arsitektur encoder–decoder U-Net untuk menghasilkan <strong>binary mask</strong> (hitam–putih) yang memisahkan piksel area luka dari kulit sehat di sekitarnya.
+        </div>
+      </div>
+      <div class="pipe-step" data-pipe="1">
+        <div class="pipe-top">
+          <div>
+            <div class="pipe-num">02 — KLASIFIKASI</div>
+            <div class="pipe-title">Transfer Learning</div>
+            <div class="pipe-desc">EfficientNet, ResNet50, InceptionV3, Swin Transformer.</div>
+          </div>
+          <span class="pipe-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </div>
+        <div class="pipe-detail">
+          Citra luka diekstraksi fiturnya menggunakan model terbaik hasil komparasi transfer learning (EfficientNet) untuk menghitung distribusi probabilitas pada <strong>10 kelas luka kulit</strong> (Abrasions, Burns, Cut, Laceration, Bruises, Diabetic, Pressure, Surgical, Venous, dan Normal Skin).
+        </div>
+      </div>
+      <div class="pipe-step" data-pipe="2">
+        <div class="pipe-top">
+          <div>
+            <div class="pipe-num">03 — INTERPRETASI</div>
+            <div class="pipe-title">Grad-CAM</div>
+            <div class="pipe-desc">Peta panas area fokus pengambilan keputusan model.</div>
+          </div>
+          <span class="pipe-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </div>
+        <div class="pipe-detail">
+          Gradient-weighted Class Activation Mapping menghitung gradien skor kelas prediksi terhadap lapisan konvolusi terakhir (<code>top_activation</code>) untuk memvisualisasikan <strong>heatmap</strong> merah–kuning pada area citra yang paling menentukan keputusan model.
+        </div>
+      </div>
+      <div class="pipe-step" data-pipe="3">
+        <div class="pipe-top">
+          <div>
+            <div class="pipe-num">04 — REKOMENDASI</div>
+            <div class="pipe-title">LLM Gemini</div>
+            <div class="pipe-desc">Informasi penanganan awal dalam bahasa alami.</div>
+          </div>
+          <span class="pipe-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </div>
+        <div class="pipe-detail">
+          Label hasil klasifikasi, persentase area luka dari U-Net, serta citra visualisasi Grad-CAM dikirimkan sebagai prompt multimodal ke <strong>Gemini 3.5 Flash</strong> untuk menyusun ringkasan kondisi, langkah penanganan awal, dan tanda bahaya medis secara interaktif.
+        </div>
+      </div>
+    </div>
+  </header>
+</div>
+
+<!-- ANALYSIS PAGE VIEW (Hidden until Start is pressed) -->
+<main class="container section analysis-page" id="analyze">
+  <div class="analysis-topbar">
+    <button type="button" class="btn btn-ghost btn-sm" id="backToStartBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Kembali ke Halaman Utama
+    </button>
+  </div>
+
+  <!-- Upload state -->
+  <div id="uploadState">
+    <div class="section-head">
+      <h2>Unggah Citra Luka</h2>
+      <p>Format JPG, JPEG, atau PNG — resolusi minimal 224 × 224 piksel.</p>
+    </div>
+
+    <div class="upload-zone" id="uploadZone">
+      <div class="upload-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+        </svg>
+      </div>
+      <div class="upload-title">Tarik & letakkan citra luka di sini</div>
+      <div class="upload-hint">atau <strong>klik untuk memilih file</strong> dari perangkat Anda</div>
+      <div class="upload-formats">
+        <span class="format-chip">.JPG</span>
+        <span class="format-chip">.JPEG</span>
+        <span class="format-chip">.PNG</span>
+        <span class="format-chip">≤ 10 MB</span>
+      </div>
+    </div>
+    <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png" />
+  </div>
+
+  <!-- Processing state -->
+  <div class="processing" id="processingState">
+    <div class="proc-head">
+      <div class="proc-title">Memproses citra luka…</div>
+      <div class="proc-status" id="procStatus">0%</div>
+    </div>
+    <div class="proc-bar"><div class="proc-bar-fill" id="procBar"></div></div>
+    <div class="proc-steps" id="procSteps">
+      <div class="proc-step" data-step="0">
+        <div class="proc-step-icon"></div>
+        <div class="proc-step-label">Segmentasi U-Net — mengisolasi area luka</div>
+      </div>
+      <div class="proc-step" data-step="1">
+        <div class="proc-step-icon"></div>
+        <div class="proc-step-label">Klasifikasi transfer learning — 10 kelas luka</div>
+      </div>
+      <div class="proc-step" data-step="2">
+        <div class="proc-step-icon"></div>
+        <div class="proc-step-label">Grad-CAM — memetakan area fokus model</div>
+      </div>
+      <div class="proc-step" data-step="3">
+        <div class="proc-step-icon"></div>
+        <div class="proc-step-label">Gemini 3.5 Flash — menyusun rekomendasi</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results state -->
+  <div class="results" id="resultsState">
+    <!-- Not-a-wound banner (shown when image is not a wound) -->
+    <div class="not-wound-banner" id="notWoundBanner">
+      <div class="not-wound-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <div class="not-wound-title" style="margin-bottom: 0;">Gambar yang diunggah bukan Luka</div>
+    </div>
+
+    <div class="section-head" id="resultHead">
+      <h2>Hasil Analisis</h2>
+      <p>Ringkasan komprehensif dari pipeline segmentasi, klasifikasi, interpretasi, dan rekomendasi.</p>
+    </div>
+
+    <div class="results-grid">
+
+      <!-- Card: Segmentasi U-Net & Interpretasi Grad-CAM (Combined cell) -->
+      <div class="card col-7" style="animation-delay: 0.05s;">
+        <div class="card-head">
+          <div class="card-head-left">
+            <div class="card-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7a5 5 0 1 0 5 5"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Segmentasi U-Net & Interpretasi Grad-CAM</div>
+              <div class="card-subtitle">U-Net Binary Mask · Explainable AI Heatmap (224 × 224)</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <span class="tag blue" id="maskArea">—</span>
+            <span class="tag amber" id="gradcamArea">Fokus XAI —</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="img-trio">
+            <div>
+              <div class="img-slot" id="slotOriginal">
+                <div class="placeholder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                  <span>Citra Asli</span>
+                </div>
+              </div>
+              <div class="label">INPUT (224×224)</div>
+            </div>
+            <div>
+              <div class="img-slot" id="slotMask">
+                <div class="placeholder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/></svg>
+                  <span>Mask</span>
+                </div>
+              </div>
+              <div class="label">U-NET MASK</div>
+            </div>
+            <div>
+              <div class="img-slot" id="slotGradcam">
+                <div class="placeholder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6a6 6 0 1 0 6 6"/></svg>
+                  <span>Heatmap Grad-CAM</span>
+                </div>
+              </div>
+              <div class="label">GRAD-CAM</div>
+            </div>
+          </div>
+
+          <div class="badge-legend">
+            <div class="badge-legend-item">
+              <span class="legend-dot blue"></span>
+              <span><strong>Biru (U-Net):</strong> Persentase luas area luka hasil segmentasi binary mask</span>
+            </div>
+            <div class="badge-legend-item">
+              <span class="legend-dot amber"></span>
+              <span><strong>Kuning (Grad-CAM / XAI):</strong> Persentase area fokus utama (merah–kuning) perhatian model</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Klasifikasi -->
+      <div class="card col-5" style="animation-delay: 0.1s;">
+        <div class="card-head">
+          <div class="card-head-left">
+            <div class="card-icon purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Klasifikasi Jenis Luka</div>
+              <div class="card-subtitle">Best Model · 10 Kelas</div>
+            </div>
+          </div>
+          <span class="tag purple">EfficientNet-B1</span>
+        </div>
+        <div class="card-body">
+          <div class="class-hero">
+            <div class="class-label">Prediksi Utama</div>
+            <div class="class-name" id="predClass">—</div>
+            <div class="class-conf">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              <span id="predConf">—</span>
+            </div>
+          </div>
+          <div class="prob-list" id="probList"></div>
+        </div>
+      </div>
+
+      <!-- Card: LLM Recommendation -->
+      <div class="card col-12" style="animation-delay: 0.15s;">
+        <div class="card-head">
+          <div class="card-head-left">
+            <div class="card-icon green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Rekomendasi Penanganan Awal</div>
+              <div class="card-subtitle">Gemini 3.5 Flash · LLM</div>
+            </div>
+          </div>
+          <span class="tag green">Live</span>
+        </div>
+        <div class="card-body">
+          <div class="llm-panel">
+            <div class="llm-meta">
+              <span class="dot"></span>
+              <span id="llmModel">gemini-3.5-flash · multimodal prompt</span>
+            </div>
+            <h4>Ringkasan Kondisi</h4>
+            <p id="llmSummary">Menunggu hasil klasifikasi…</p>
+            <h4>Langkah Penanganan Awal</h4>
+            <ul id="llmSteps">
+              <li>—</li>
+            </ul>
+            <h4>Kapan Harus ke Tenaga Medis</h4>
+            <p id="llmWarning">—</p>
+            <div class="llm-note">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <path d="M12 9v4M12 17h.01"/>
+              </svg>
+              <span>Output ini bersifat informatif sebagai alat bantu dan bukan pengganti diagnosis medis profesional.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="results-actions">
+      <button class="btn btn-ghost" id="resetBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>
+        </svg>
+        Analisis Citra Lain
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<!-- CONTACT US PAGE VIEW (Hidden until Kontak is clicked) -->
+<section class="container section contact-page" id="contactPage">
+  <div class="contact-layout">
+
+    <!-- Left column: Pengembang (3 Developers) -->
+    <div class="contact-card">
+      <h2 class="contact-card-title">Pengembang:</h2>
+      <div class="dev-grid">
+
+        <div class="dev-item">
+          <div class="dev-photo-wrap">
+            <img src="{{ url_for('static', filename='images/dev_johan.jpg') }}" alt="Bhakti, Johan" class="dev-photo" />
+          </div>
+          <div class="dev-info">
+            <p><strong>Nama:</strong> Bhakti, Johan</p>
+            <p><strong>Email:</strong> <a href="mailto:johansatya93@gmail.com">johansatya93@gmail.com</a></p>
+            <p><strong>No. Telp:</strong> <a href="https://wa.me/6281243271993" target="_blank" rel="noopener">+6281243271993</a></p>
+          </div>
+        </div>
+
+        <div class="dev-item">
+          <div class="dev-photo-wrap">
+            <img src="{{ url_for('static', filename='images/dev_kyran.jpg') }}" alt="Runtukahu, Kyran" class="dev-photo" />
+          </div>
+          <div class="dev-info">
+            <p><strong>Nama:</strong> Runtukahu, Kyran</p>
+            <p><strong>Email:</strong> <a href="mailto:kyranruntukahu38@gmail.com">kyranruntukahu38@gmail.com</a></p>
+            <p><strong>No. Telp:</strong> <a href="https://wa.me/6285757484892" target="_blank" rel="noopener">+6285757484892</a></p>
+          </div>
+        </div>
+
+        <div class="dev-item">
+          <div class="dev-photo-wrap">
+            <img src="{{ url_for('static', filename='images/dev_mitchelly.jpg') }}" alt="Masengi, Mitchelly" class="dev-photo" />
+          </div>
+          <div class="dev-info">
+            <p><strong>Nama:</strong> Masengi, Mitchelly</p>
+            <p><strong>Email:</strong> <a href="mailto:mitchellymasengi@gmail.com">mitchellymasengi@gmail.com</a></p>
+            <p><strong>No. Telp:</strong> <a href="https://wa.me/6287751696357" target="_blank" rel="noopener">+6287751696357</a></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right column: About card -->
+    <div class="contact-right">
+      <div class="contact-card contact-about">
+        <div class="contact-about-logo">
+          <img src="{{ url_for('static', filename='images/WoundVueLogo.png') }}" alt="WoundVue" />
+        </div>
+        <div class="contact-about-body">
+          <p>
+            Terima kasih telah menggunakan <strong>WoundVue</strong>! Kami adalah tim developer yang bersemangat menciptakan solusi kesehatan berbasis AI yang mudah digunakan. Setiap fitur dirancang dengan cermat untuk membantu Anda mendapatkan informasi perawatan luka yang cepat. Saran dan feedback Anda sangat berarti bagi kami!
+          </p>
+          <div class="contact-tags">
+            <span class="contact-tag">Flask</span>
+            <span class="contact-tag">TensorFlow</span>
+            <span class="contact-tag">U-Net</span>
+            <span class="contact-tag">Gemini AI</span>
+            <span class="contact-tag">EfficientNet</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-text">
+      <strong>WoundVue</strong> — Prototipe sistem identifikasi & klasifikasi luka pada kulit berbasis integrasi Deep Learning dan Large Language Model. Dikembangkan sebagai bagian dari penelitian skripsi di Fakultas Ilmu Komputer, Universitas Klabat.
+      <div class="footer-devs">
+        <strong>Dikembangkan oleh:</strong> Bhakti, Johan · Runtukahu, Kyran · Masengi, Mitchelly
+      </div>
+    </div>
+    <div class="footer-meta">CRISP-DM · 2026</div>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</body>
+</html>

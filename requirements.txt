@@ -1,0 +1,11 @@
+# Versions follow Bab 3.4.1 where they are compatible with each other.
+# NOTE: TensorFlow 2.19.0 has no wheels for Python 3.13 (it supports 3.9-3.12).
+# For Python 3.13 use TensorFlow >= 2.20. See README.md "Environment" section.
+flask==3.1.1
+tensorflow>=2.20
+keras>=3.10.0
+google-genai
+python-dotenv
+opencv-python
+numpy
+Pillow
